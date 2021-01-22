@@ -1,0 +1,104 @@
+{
+    "nodes": [
+        {
+            "type": "sgx",
+            "name": "node1",
+            "ip_address": "127.0.0.1",
+            "reactive_port": 5000
+        },
+        {
+            "type": "sgx",
+            "name": "node2",
+            "ip_address": "127.0.0.1",
+            "reactive_port": 6000
+        }
+    ],
+    "modules" : [
+        {
+            "type": "sgx",
+            "name": "webserver",
+            "node": "node1",
+            "vendor_key": "../vendor/private_key.pem",
+            "ra_settings": "../vendor/settings.json"
+        },
+        {
+            "type": "sgx",
+            "name": "db",
+            "node": "node1",
+            "vendor_key": "../vendor/private_key.pem",
+            "ra_settings": "../vendor/settings.json"
+        },
+        {
+            "type": "sgx",
+            "name": "controller",
+            "node": "node1",
+            "vendor_key": "../vendor/private_key.pem",
+            "ra_settings": "../vendor/settings.json"
+        },
+        {
+            "type": "sgx",
+            "name": "button_driver",
+            "node": "node2",
+            "vendor_key": "../vendor/private_key.pem",
+            "ra_settings": "../vendor/settings.json"
+        },
+        {
+            "type": "sgx",
+            "name": "led_driver",
+            "node": "node2",
+            "vendor_key": "../vendor/private_key.pem",
+            "ra_settings": "../vendor/settings.json"
+        }
+    ],
+    "connections": [
+      {
+          "from_module": "button_driver",
+          "from_output": "button_pressed",
+          "to_module": "controller",
+          "to_input": "button_pressed",
+          "encryption": "aes"
+      },
+      {
+          "from_module": "controller",
+          "from_output": "toggle_led",
+          "to_module": "led_driver",
+          "to_input": "toggle_led",
+          "encryption": "aes"
+      },
+      {
+          "from_module": "controller",
+          "from_output": "increment_presses",
+          "to_module": "db",
+          "to_input": "increment_presses",
+          "encryption": "aes"
+      },
+      {
+          "from_module": "webserver",
+          "from_request": "get_presses",
+          "to_module": "db",
+          "to_handler": "get_presses",
+          "encryption": "aes"
+      },
+      {
+          "name": "init-server",
+          "direct": true,
+          "to_module": "webserver",
+          "to_input": "init",
+          "encryption": "aes"
+      },
+      {
+          "name": "trigger-btn",
+          "direct": true,
+          "to_module": "button_driver",
+          "to_input": "trigger_button_press",
+          "encryption": "aes"
+      },
+      {
+          "name": "get-presses",
+          "direct": true,
+          "to_module": "db",
+          "to_handler": "get_presses",
+          "encryption": "aes"
+      }
+    ]
+}

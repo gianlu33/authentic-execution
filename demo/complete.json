@@ -1,0 +1,109 @@
+{
+    "nodes": [
+        {
+            "type": "sgx",
+            "name": "node_sgx",
+            "ip_address": "127.0.0.1",
+            "reactive_port": 5000
+        },
+        {
+            "type": "sancus",
+            "name": "node_sancus",
+            "ip_address": "127.0.0.1",
+            "vendor_id": 4660,
+            "vendor_key": "0b7bf3ae40880a8be430d0da34fb76f0",
+            "reactive_port": 6000
+        }
+    ],
+    "modules" : [
+        {
+            "type": "sgx",
+            "name": "webserver",
+            "node": "node_sgx",
+            "vendor_key": "../vendor/private_key.pem",
+            "ra_settings": "../vendor/settings.json"
+        },
+        {
+            "type": "sgx",
+            "name": "db",
+            "node": "node_sgx",
+            "vendor_key": "../vendor/private_key.pem",
+            "ra_settings": "../vendor/settings.json"
+        },
+        {
+            "type": "sgx",
+            "name": "controller",
+            "node": "node_sgx",
+            "vendor_key": "../vendor/private_key.pem",
+            "ra_settings": "../vendor/settings.json"
+        },
+        {
+            "type": "sancus",
+            "name": "button_driver",
+            "files": ["button_driver.c"],
+            "node": "node_sancus"
+        },
+        {
+            "type": "sancus",
+            "name": "led_driver",
+            "node": "node_sancus",
+            "deployed": true,
+            "files": [],
+            "binary": "",
+            "id": 1,
+            "symtab": "",
+            "key": "89bfaebddcec42d56ee42138afe1951d"
+        }
+    ],
+    "connections": [
+      {
+          "from_module": "button_driver",
+          "from_output": "button_pressed",
+          "to_module": "controller",
+          "to_input": "button_pressed",
+          "encryption": "spongent"
+      },
+      {
+          "from_module": "controller",
+          "from_output": "toggle_led",
+          "to_module": "led_driver",
+          "to_input": 0,
+          "encryption": "spongent"
+      },
+      {
+          "from_module": "controller",
+          "from_output": "increment_presses",
+          "to_module": "db",
+          "to_input": "increment_presses",
+          "encryption": "aes"
+      },
+      {
+          "from_module": "webserver",
+          "from_request": "get_presses",
+          "to_module": "db",
+          "to_handler": "get_presses",
+          "encryption": "aes"
+      },
+      {
+          "name": "init-server",
+          "direct": true,
+          "to_module": "webserver",
+          "to_input": "init",
+          "encryption": "aes"
+      },
+      {
+          "name": "trigger-btn",
+          "direct": true,
+          "to_module": "button_driver",
+          "to_input": "trigger_button_press",
+          "encryption": "spongent"
+      },
+      {
+          "name": "get-presses",
+          "direct": true,
+          "to_module": "db",
+          "to_handler": "get_presses",
+          "encryption": "aes"
+      }
+    ]
+}
