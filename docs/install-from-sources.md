@@ -10,7 +10,7 @@ For building the Docker images we wrote some scripts to install all of the compo
 
 The Rust programming language is used for developing the SGX and native modules and event manager. We recommend to install Rust using [rustup](https://www.rust-lang.org/tools/install).
 
-### [SGX] Fortanix EDP 
+### [SGX] Fortanix EDP
 
 Fortanix EDP is a framework to build and run SGX applications written in Rust. The installation guide can be found [here](https://edp.fortanix.com/docs/installation/guide/). In the same website you can find some documentation about how EDP works.
 
@@ -18,7 +18,7 @@ Fortanix EDP is a framework to build and run SGX applications written in Rust. T
 
 ### [Sancus] Sancus toolchain
 
-The Sancus toolchain is required to build Sancus modules. The main [Sancus repository](https://github.com/sancus-tee/sancus-main) contains instructions to automatically install all the dependencies and the toolchain. 
+The Sancus toolchain is required to build Sancus modules. The main [Sancus repository](https://github.com/sancus-tee/sancus-main) contains instructions to automatically install all the dependencies and the toolchain.
 
 **Note**: as pointed out in the README file in that repository, you might want to override the default security level and the Sancus key. The former specifies whether you want to use 64-bit or 128-bit encryption, while the latter defines the node key of the Sancus boards. For the demo in this repository, we used 128 bits of security and the default key `deadbeefcafebabec0defeeddefec8ed`.
 
@@ -30,13 +30,11 @@ In the most recent Linux distributions, Python 3 is already installed. Check wit
 
 ## Authentic Execution Framework
 
-### [SGX, native] Event Manager, aes-encryptor, remote attestation apps
+### [SGX, native] Event Manager, remote attestation apps
 
 The Event Manager (EM) is the **untrusted** application that manages all the events that are exchanged between modules, and between a module and the deployer. It is also responsible of the loading process of the modules on the corresponding node.
 
-`aes-encryptor` is a Rust application used by the deployer to encrypt/decrypt events sent to/from the modules. It uses the same AES library used by the SGX modules.
-
-The Remote Attestation process for SGX requires two processes, called `ra_sp` and `ra_client` that communicate with the SGX modules and handle all the steps involved in the process. 
+The Remote Attestation process for SGX requires two apps, called `ra_sp` and `ra_client` that communicate with the SGX modules and handle all the steps involved in the process.
 
 **Installation**
 
@@ -94,4 +92,3 @@ The repositories can be found here: [sancus-compiler](https://github.com/gianlu3
 
 - Clone the [repository](https://github.com/gianlu33/reactive-tools)
 - Install with pip: `pip install .` (from the root directory of the repository)
-
